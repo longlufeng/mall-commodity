@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.llf.mapper.CommodityInfoMapper">
+    
+    <insert id="addBase">
+        insert into commodity_base_info
+        (
+	        commodityId,
+	        commodityName,
+	        merchantId,
+	        status,
+	        createDate,
+	        createTime
+		)
+        values
+        (
+	        #{commodityId},
+	        #{commodityName},
+	        #{merchantId},
+	        #{status},
+	        #{createDate},
+	        #{createTime}
+        )
+    </insert>
+    
+    <insert id="addDetail">
+        insert into commodity_detail_info
+        (
+	        commodityId,
+			commodityType,
+			commodityDesc,
+			inventory,
+			createDate,
+			createTime
+		)
+        values
+        (
+	        #{commodityId},
+	        #{commodityType},
+	        #{commodityDesc},
+	        #{inventory},
+	        #{createDate},
+	        #{createTime}
+        )
+    </insert>
+    
+    <insert id="addImage">
+        insert into commodity_image
+        (
+	        commodityId,
+			url,
+			createDate,
+			createTime
+		)
+        values
+        (
+	        #{commodityId},
+	        #{url},
+	        #{createDate},
+	        #{createTime}
+        )
+    </insert>
+    
+    <insert id="addPrice">
+        insert into commodity_price
+        (
+	        commodityPriceId,
+			commodityId,
+			price,
+			status,
+			startDate,
+			endDate,
+			createDate,
+			createTime
+		)
+        values
+        (
+	        #{commodityPriceId},
+	        #{commodityId},
+	        #{price},
+	        #{status},
+	        #{startDate},
+	        #{endDate},
+	        #{createDate},
+	        #{createTime}
+        )
+    </insert>
+    
+    <delete id="delBase">
+        delete from commodity_base_info 
+        where 
+       		commodityId = #{commodityId}
+    </delete>
+    
+    <delete id="delDetail">
+        delete from commodity_detail_info 
+        where 
+       		commodityId = #{commodityId}
+    </delete>
+    
+    <delete id="delImage">
+        delete from commodity_image 
+        where 
+       		commodityId = #{commodityId}
+    </delete>
+    
+    <delete id="delPrice">
+        delete from commodity_price
+        where 
+       		commodityId = #{commodityId}
+    </delete>
+    
+    <update id="updBase">
+        update commodity_base_info 
+        <set>
+        	<if test="commodityName != null and commodityName != ''">
+        		commodityName = #{commodityName},
+        	</if>
+        	<if test="status != null and status != ''">
+        		status = #{status},
+        	</if>
+        	<if test="updateDate != null and updateDate != ''">
+        		updateDate = #{updateDate},
+        	</if>
+        	<if test="updateTime != null and updateTime != ''">
+        		updateTime = #{updateTime}
+        	</if>
+        </set>
+        where 
+       		commodityId = #{commodityId}
+    </update>
+    
+    <update id="updDetail">
+        update commodity_detail_info 
+        <set>
+        	<if test="commodityType != null and commodityType != ''">
+        		commodityType = #{commodityType},
+        	</if>
+        	<if test="commodityDesc != null and commodityDesc != ''">
+        		commodityDesc = #{commodityDesc},
+        	</if>
+        	<if test="updateDate != null and updateDate != ''">
+        		updateDate = #{updateDate},
+        	</if>
+        	<if test="updateTime != null and updateTime != ''">
+        		updateTime = #{updateTime}
+        	</if>
+        </set>
+        where 
+       		commodityId = #{commodityId}
+    </update>
+    
+    <update id="updImage">
+        update commodity_image 
+        <set>
+        	<if test="url != null and url != ''">
+        		url = #{url},
+        	</if>
+        	<if test="updateDate != null and updateDate != ''">
+        		updateDate = #{updateDate},
+        	</if>
+        	<if test="updateTime != null and updateTime != ''">
+        		updateTime = #{updateTime}
+        	</if>
+        </set>
+        where 
+       		commodityId = #{commodityId}
+    </update>
+    
+    <update id="updPrice">
+        update commodity_price 
+        <set>
+        	<if test="price != null and price != ''">
+        		price = #{price},
+        	</if>
+        	<if test="status != null and status != ''">
+        		status = #{status},
+        	</if>
+        	<if test="updateDate != null and updateDate != ''">
+        		updateDate = #{updateDate},
+        	</if>
+        	<if test="updateTime != null and updateTime != ''">
+        		updateTime = #{updateTime}
+        	</if>
+        </set>
+        where 
+       		commodityId = #{commodityId}
+    </update>
+    
+    <select id="qryCommodityInfo" resultType="java.util.Map" parameterType="com.llf.dto.CommodityInfoQryDto">
+    	select base.commodityId,base.merchantId,base.commodityName,base.status,detail.commodityType,detail.commodityDesc,image.url,price.price
+    	from commodity_base_info base
+	    	inner join commodity_detail_info detail on base.commodityId=detail.commodityId
+	    	inner join commodity_image image on base.commodityId=image.commodityId
+	    	inner join commodity_price price on base.commodityId=price.commodityId
+    	where 
+    		base.commodityId = #{commodityId}
+    </select>
+    
+    <select id="qryList" resultType="java.util.Map" parameterType="com.llf.dto.CommodityInfoQryDto">
+    	select base.commodityId,base.merchantId,base.commodityName,base.status,detail.commodityType,detail.commodityDesc,image.url,price.price
+    	from commodity_base_info base
+    	inner join commodity_detail_info detail on base.commodityId=detail.commodityId
+    	inner join commodity_image image on base.commodityId=image.commodityId
+    	inner join commodity_price price on base.commodityId=price.commodityId
+    	<where>
+    		<if test="merchantId != null and merchantId != ''">
+        		base.merchantId = #{merchantId}
+        	</if>
+        	<if test="commodityId != null and commodityId != ''">
+        		and base.commodityId = #{commodityId}
+        	</if>
+        	<if test="commodityName != null and commodityName != ''">
+        		and base.commodityName like concat('%',#{commodityName},'%')
+        	</if>
+        	<if test="status != null and status != ''">
+        		and base.status = #{status}
+        	</if>
+    	</where> 
+    		
+    </select>
+    
+    
+</mapper>
